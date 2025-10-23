@@ -1,0 +1,13 @@
+pandas
+numpy
+scikit-learn
+transformers
+datasets
+torch
+accelerate
+sentencepiece
+protobuf
+streamlit
+tqdm
+requests
+huggingface-hub
