@@ -2,27 +2,31 @@ import pickle
 import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-# load save model
-model_fraud = pickle.load(open('model_fraud.sav','rb'))
+# Load model dan TF-IDF vocabulary
+model_fraud = pickle.load(open('model_fraud.sav', 'rb'))
+vocab = pickle.load(open('new_selected_feature_tf-idf.sav', 'rb'))
 
-tfidf = TfidfVectorizer
+# Inisialisasi TF-IDF Vectorizer dengan vocabulary hasil training
+loaded_vec = TfidfVectorizer(decode_error="replace", vocabulary=vocab)
 
-loaded_vec = TfidfVectorizer(decode_error="replace", vocabulary=set(pickle.load(open("new_selected_feature_tf-idf.sav", "rb"))))
+# Judul aplikasi
+st.title('💌 Prediksi Email Spam (IndoBERT Fraud Detection)')
 
+# Input teks
+clean_teks = st.text_area('Masukkan isi email di bawah ini:')
 
-# judul halaman
-st.title ('Prediksi Email Spam')
+if st.button('🔍 Deteksi Email'):
+    if clean_teks.strip() == "":
+        st.warning("Harap masukkan teks email terlebih dahulu!")
+    else:
+        # Transformasi teks input ke bentuk TF-IDF
+        teks_tfidf = loaded_vec.transform([clean_teks])
 
-clean_teks = st.text_input('Masukan Teks Email')
+        # Prediksi
+        predict_fraud = model_fraud.predict(teks_tfidf)[0]
 
-fraud_detection = ''
-
-if st.button('Hasil Deteksi'):
-    predict_fraud = model_fraud.predict(loaded_vec.fit_transform([clean_teks]))
-    
-    if (predict_fraud == 'ham'):
-        fraud_detection = 'Email Normal'
-    else :
-        fraud_detection = 'Email Spam'
-
-st.success(fraud_detection)
+        # Tampilkan hasil prediksi
+        if predict_fraud == 'ham':
+            st.success("✅ Email Normal (Bukan Spam)")
+        else:
+            st.error("🚨 Email Spam Terdeteksi!")
