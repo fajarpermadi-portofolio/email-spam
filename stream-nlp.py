@@ -10,7 +10,7 @@ vocab = pickle.load(open('new_selected_feature_tf-idf.sav', 'rb'))
 loaded_vec = TfidfVectorizer(decode_error="replace", vocabulary=vocab)
 
 # Judul aplikasi
-st.title('💌 Prediksi Email Spam (IndoBERT Fraud Detection)')
+st.title('💌 Prediksi Email Spam')
 
 # Input teks
 clean_teks = st.text_area('Masukkan isi email di bawah ini:')
@@ -30,3 +30,4 @@ if st.button('🔍 Deteksi Email'):
             st.success("✅ Email Normal (Bukan Spam)")
         else:
             st.error("🚨 Email Spam Terdeteksi!")
+
